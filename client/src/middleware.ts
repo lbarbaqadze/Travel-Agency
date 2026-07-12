@@ -15,7 +15,16 @@ const PROTECTED_PREFIXES = [
   '/admin',
 ]
 
+function isSameOriginApi() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? ''
+  return apiUrl.startsWith('/')
+}
+
 export function middleware(req: NextRequest) {
+  if (!isSameOriginApi()) {
+    return NextResponse.next()
+  }
+
   const { pathname } = req.nextUrl
 
   const hasSession = Boolean(req.cookies.get('refreshToken'))
