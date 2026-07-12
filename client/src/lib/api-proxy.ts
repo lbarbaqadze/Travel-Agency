@@ -43,6 +43,7 @@ export async function proxyToBackend(request: NextRequest, path: string[]) {
     headers,
     body: requestBody,
     cache: 'no-store',
+    redirect: 'manual',
   })
 
   const responseHeaders = new Headers()
@@ -69,7 +70,8 @@ export async function proxyToBackend(request: NextRequest, path: string[]) {
     if (single) responseHeaders.append('set-cookie', single)
   }
 
-  const responseBody = await backendResponse.arrayBuffer()
+  const isRedirect = backendResponse.status >= 300 && backendResponse.status < 400
+  const responseBody = isRedirect ? null : await backendResponse.arrayBuffer()
 
   return new NextResponse(responseBody, {
     status: backendResponse.status,
