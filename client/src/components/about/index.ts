@@ -1,0 +1,5 @@
+export { default as AboutHero } from './AboutHero'
+export { default as AboutShowcase } from './AboutShowcase'
+export { default as AboutSponsors } from './AboutSponsors'
+export { default as AboutFeatures } from './AboutFeatures'
+export { default as AboutSection } from './AboutSection'

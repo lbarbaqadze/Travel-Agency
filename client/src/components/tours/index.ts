@@ -1,0 +1,8 @@
+export { default as ToursExperienceBento } from './ToursExperienceBento'
+export { default as ToursPopularHero } from './ToursPopularHero'
+export { default as ToursCategoryFilter } from './ToursCategoryFilter'
+export { default as ToursPagination } from './ToursPagination'
+export { default as TourGallery } from './TourGallery'
+export { default as BookingWidget } from './BookingWidget'
+export { default as ReviewsSection } from './ReviewsSection'
+export { default as RelatedTours } from './RelatedTours'

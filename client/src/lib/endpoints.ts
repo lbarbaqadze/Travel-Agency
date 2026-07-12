@@ -1,0 +1,42 @@
+
+export const ENDPOINTS = {
+    signUp: '/auth/sign-up',
+    signIn: '/auth/sign-in',
+    logOut: '/auth/log-out',
+    me: '/auth/me',
+    updateProfile: '/auth/me',
+    changePassword: '/auth/change-password',
+    changePasswordCode: '/auth/change-password/code',
+    refreshToken: '/auth/refresh-token',
+    verifyEmail: '/auth/verify-email',
+    resendVerification: '/auth/resend-verification',
+    forgotPassword: '/auth/forgot-password',
+    resetPassword: '/auth/reset-password',
+    googleSignIn: '/auth/google',
+  
+    tours: (params?: string) => `/tours${params ? `?${params}` : ''}`,
+    toursAdmin: (params?: string) => `/tours/admin/all${params ? `?${params}` : ''}`,
+    tourBySlug: (slug: string) => `/tours/${slug}`,
+    tourById: (id: number | string) => `/tours/admin/${id}`,
+    createTour: '/tours',
+    updateTour: (id: number | string) => `/tours/${id}`,
+    deleteTour: (id: number | string) => `/tours/${id}`,
+    uploadImage: '/upload/image',
+  
+    bookings: '/bookings',
+    bookingsAdmin: '/bookings/admin/all',
+    checkoutSession: (bookingId: number | string) => `/bookings/checkout-session/${bookingId}`,
+    cancelBooking: (bookingId: number | string) => `/bookings/${bookingId}/cancel`,
+    deleteBooking: (bookingId: number | string) => `/bookings/${bookingId}`,
+    paymentSuccess: (sessionId: string) => `/bookings/success?session_id=${encodeURIComponent(sessionId)}`,
+  
+    createReview: '/reviews',
+    reviewsAdmin: '/reviews/admin/all',
+    reviewsForTour: (tourId: number | string) => `/reviews/tour/${tourId}`,
+    deleteReview: (id: number | string) => `/reviews/${id}`,
+  
+    users: '/users',
+    userById: (id: number | string) => `/users/${id}`,
+    updateUserRole: (id: number | string) => `/users/${id}/role`,
+    deleteUser: (id: number | string) => `/users/${id}`,
+  }
