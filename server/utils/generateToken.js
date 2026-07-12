@@ -21,7 +21,7 @@ export const generateTokens = (userId) => {
 const getCookieOptions = () => ({
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    sameSite: 'lax',
     path: "/",
 });
 

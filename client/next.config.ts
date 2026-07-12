@@ -16,8 +16,15 @@ const nextConfig: NextConfig = {
     ],
   },
   async rewrites() {
-    if (process.env.NODE_ENV === 'production') {
-      return [];
+    const backendUrl = process.env.API_REWRITE_URL?.replace(/\/$/, '');
+
+    if (backendUrl) {
+      return [
+        {
+          source: '/api/:path*',
+          destination: `${backendUrl}/api/:path*`,
+        },
+      ];
     }
 
     const apiPort = process.env.API_PROXY_PORT || '3002';
