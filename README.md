@@ -54,7 +54,7 @@ A full-stack travel agency platform for discovering, booking, and managing curat
 - **Google OAuth** — one-click login via Google account.
 - **Email verification** — 6-digit code sent after registration.
 - **Forgot password** — email with reset code.
-- **Change password** — from profile, with email verification code and show/hide password toggles.
+- **Change password** — from profile, with email verification code.
 - **Profile page** — update name and surname; sign out.
 - **JWT session** — access + refresh tokens stored in httpOnly cookies; automatic silent token refresh on expired sessions.
 - **Protected routes** — My Bookings, Profile, and Admin require authentication (client-side guard + API validation).
@@ -66,6 +66,7 @@ A full-stack travel agency platform for discovering, booking, and managing curat
 - **Stripe Checkout** — secure payment flow after booking creation.
 - **Stripe webhooks** — backend confirms payment and updates booking status automatically.
 - **My Bookings** (`/my-bookings`) — view all bookings, see status (pending / confirmed / cancelled), pay pending bookings, and cancel when allowed.
+- **Test Card Number** 4242 4242 4242 4242
 
 ### Reviews
 
