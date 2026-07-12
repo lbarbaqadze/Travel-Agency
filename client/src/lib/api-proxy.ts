@@ -36,18 +36,22 @@ export async function proxyToBackend(request: NextRequest, path: string[]) {
   })
 
   const hasBody = !['GET', 'HEAD'].includes(request.method)
-  const body = hasBody ? await request.arrayBuffer() : undefined
+  const requestBody = hasBody ? await request.arrayBuffer() : undefined
 
   const backendResponse = await fetch(targetUrl, {
     method: request.method,
     headers,
-    body,
+    body: requestBody,
     cache: 'no-store',
   })
 
   const responseHeaders = new Headers()
   backendResponse.headers.forEach((value, key) => {
-    if (key.toLowerCase() === 'set-cookie') return
+    const lower = key.toLowerCase()
+    if (lower === 'set-cookie') return
+    if (lower === 'content-encoding') return
+    if (lower === 'content-length') return
+    if (lower === 'transfer-encoding') return
     responseHeaders.set(key, value)
   })
 
@@ -65,7 +69,9 @@ export async function proxyToBackend(request: NextRequest, path: string[]) {
     if (single) responseHeaders.append('set-cookie', single)
   }
 
-  return new NextResponse(backendResponse.body, {
+  const responseBody = await backendResponse.arrayBuffer()
+
+  return new NextResponse(responseBody, {
     status: backendResponse.status,
     statusText: backendResponse.statusText,
     headers: responseHeaders,
