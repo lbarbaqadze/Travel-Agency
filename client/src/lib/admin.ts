@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL as string
+import { getApiUrl } from '@/lib/api'
 
 interface UploadResponse {
   status: string
@@ -15,7 +15,7 @@ export async function uploadTourImage(
   form.append('slug', slug)
   if (publicId) form.append('publicId', publicId)
 
-  const res = await fetch(`${API_URL}${'/upload/image'}`, {
+  const res = await fetch(`${getApiUrl()}/upload/image`, {
     method: 'POST',
     credentials: 'include',
     body: form,

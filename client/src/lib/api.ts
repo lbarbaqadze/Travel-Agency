@@ -1,7 +1,19 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL as string
+const configuredApiUrl = process.env.NEXT_PUBLIC_API_URL
 
-if (!API_URL) {
+if (!configuredApiUrl) {
   throw new Error('NEXT_PUBLIC_API_URL is not defined in .env.local')
+}
+
+function getApiUrl(): string {
+  const configured = configuredApiUrl!.replace(/\/$/, '')
+
+  if (typeof window === 'undefined') return configured
+
+  if (configured.startsWith('http') && !configured.startsWith(window.location.origin)) {
+    return '/api'
+  }
+
+  return configured
 }
 
 interface ApiOptions extends RequestInit {
@@ -29,7 +41,7 @@ async function refreshAccessToken(): Promise<boolean> {
   }
 
   isRefreshing = true
-  refreshPromise = fetch(`${API_URL}/auth/refresh-token`, {
+  refreshPromise = fetch(`${getApiUrl()}/auth/refresh-token`, {
     method: 'POST',
     credentials: 'include',
   })
@@ -44,7 +56,7 @@ async function refreshAccessToken(): Promise<boolean> {
 }
 
 function clearStaleSession(): void {
-  void fetch(`${API_URL}/auth/log-out`, {
+  void fetch(`${getApiUrl()}/auth/log-out`, {
     method: 'POST',
     credentials: 'include',
   }).catch(() => {})
@@ -55,11 +67,12 @@ export async function api<T = unknown>(
   options: ApiOptions = {}
 ): Promise<T> {
   const { skipAuth, skipSessionCleanup, ...fetchOptions } = options
+  const baseUrl = getApiUrl()
 
   const doFetch = () =>
-    fetch(`${API_URL}${endpoint}`, {
+    fetch(`${baseUrl}${endpoint}`, {
       ...fetchOptions,
-      credentials: 'include', 
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
         ...fetchOptions.headers,
@@ -92,4 +105,4 @@ export async function api<T = unknown>(
   return data as T
 }
 
-export { ApiError }
+export { ApiError, getApiUrl }

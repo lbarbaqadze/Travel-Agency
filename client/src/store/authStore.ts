@@ -72,13 +72,12 @@ export const useAuthStore = create<AuthState>((set) => ({
   signIn: async (email, password) => {
     set({ isAuthenticating: true })
     try {
-      await api(ENDPOINTS.signIn, {
+      const res = await api<{ data: { user: Record<string, unknown> } }>(ENDPOINTS.signIn, {
         method: 'POST',
         body: JSON.stringify({ email, password }),
         skipAuth: true,
       })
 
-      const res = await api<{ data: { user: Record<string, unknown> } }>(ENDPOINTS.me)
       const user = normalizeUser(res.data.user)
       cacheUser(user)
       set({ user, isAuthenticating: false })

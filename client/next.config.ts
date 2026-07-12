@@ -15,26 +15,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  async rewrites() {
-    const backendUrl = process.env.API_REWRITE_URL?.replace(/\/$/, '');
-
-    if (backendUrl) {
-      return [
-        {
-          source: '/api/:path*',
-          destination: `${backendUrl}/api/:path*`,
-        },
-      ];
-    }
-
-    const apiPort = process.env.API_PROXY_PORT || '3002';
-    return [
-      {
-        source: '/api/:path*',
-        destination: `http://127.0.0.1:${apiPort}/api/:path*`,
-      },
-    ];
-  },
 };
 
 export default nextConfig;

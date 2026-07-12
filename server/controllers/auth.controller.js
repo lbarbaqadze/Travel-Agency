@@ -136,11 +136,15 @@ export const authController = {
             status: "success",
             message: "sign in is successfully",
             data: {
-                userId: user.id,
-                name: user.name,
-                surname: user.surname,
-                email: user.email
-            }
+                user: {
+                    id: user.id,
+                    name: user.name,
+                    surname: user.surname,
+                    email: user.email,
+                    role: user.role,
+                    is_verified: user.is_verified,
+                },
+            },
         })
 
     }),

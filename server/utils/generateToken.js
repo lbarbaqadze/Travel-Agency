@@ -36,7 +36,15 @@ export const setTokenCookies = (res, accessToken, refreshToken) => {
 };
 
 export const clearTokenCookies = (res) => {
-    const cookieOptions = getCookieOptions();
-    res.clearCookie('accessToken', cookieOptions);
-    res.clearCookie('refreshToken', cookieOptions); 
+    const base = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        path: "/",
+    };
+
+    for (const sameSite of ['lax', 'none']) {
+        const cookieOptions = { ...base, sameSite };
+        res.clearCookie('accessToken', cookieOptions);
+        res.clearCookie('refreshToken', cookieOptions);
+    }
 };
