@@ -66,7 +66,7 @@ A full-stack travel agency platform for discovering, booking, and managing curat
 - **Stripe Checkout** — secure payment flow after booking creation.
 - **Stripe webhooks** — backend confirms payment and updates booking status automatically.
 - **My Bookings** (`/my-bookings`) — view all bookings, see status (pending / confirmed / cancelled), pay pending bookings, and cancel when allowed.
-- **Test Card Number** 4242 4242 4242 4242
+- **Test Card Number** - 4242 4242 4242 4242
 
 ### Reviews
 
