@@ -1,5 +1,6 @@
 'use client'
 
+import { Suspense } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -30,14 +31,12 @@ function GallerySkeleton() {
   )
 }
 
-export default function TourDetailClient() {
+function TourDetailContent() {
   const params = useParams<{ slug: string }>()
   const slug = params.slug
   const { tour, isLoading, error, notFound } = useTourDetail(slug)
 
   return (
-    <>
-      <Navbar />
       <main className="min-h-screen bg-white dark:bg-neutral-950">
         {notFound ? (
           <div className="max-w-[1700px] mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-24 text-center">
@@ -166,6 +165,34 @@ export default function TourDetailClient() {
           </>
         )}
       </main>
+  )
+}
+
+export default function TourDetailClient() {
+  return (
+    <>
+      <Navbar />
+      <Suspense fallback={
+        <main className="min-h-screen bg-white dark:bg-neutral-950">
+          <section className="max-w-[1700px] mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-15 pb-4">
+            <div className="flex flex-col gap-3">
+              <div className="h-4 w-24 rounded bg-neutral-100 dark:bg-neutral-800 animate-pulse" />
+              <div className="h-10 w-2/3 rounded bg-neutral-100 dark:bg-neutral-800 animate-pulse" />
+              <div className="h-4 w-40 rounded bg-neutral-100 dark:bg-neutral-800 animate-pulse" />
+            </div>
+          </section>
+          <section className="max-w-[1700px] mx-auto px-4 sm:px-6 lg:px-8 pb-12 sm:pb-16">
+            <div className="grid lg:grid-cols-3 gap-10">
+              <div className="lg:col-span-2">
+                <GallerySkeleton />
+              </div>
+              <div className="h-96 rounded-3xl bg-neutral-100 dark:bg-neutral-800 animate-pulse" />
+            </div>
+          </section>
+        </main>
+      }>
+        <TourDetailContent />
+      </Suspense>
     </>
   )
 }

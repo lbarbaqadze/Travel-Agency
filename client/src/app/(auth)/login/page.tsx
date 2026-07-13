@@ -1,6 +1,6 @@
 'use client'
 
-import { FormEvent, Suspense, useState } from 'react'
+import { FormEvent, Suspense, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ApiError, useAuthStore } from '@/store/authStore'
@@ -27,8 +27,16 @@ import {
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const user = useAuthStore((s) => s.user)
+  const isAuthLoading = useAuthStore((s) => s.isLoading)
   const signIn = useAuthStore((s) => s.signIn)
   const isAuthenticating = useAuthStore((s) => s.isAuthenticating)
+
+  useEffect(() => {
+    if (isAuthLoading || !user) return
+    const redirect = searchParams.get('redirect')
+    router.replace(redirect && redirect.startsWith('/') ? redirect : '/')
+  }, [isAuthLoading, user, router, searchParams])
 
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState('')

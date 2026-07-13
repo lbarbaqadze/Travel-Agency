@@ -61,13 +61,19 @@ export async function proxyToBackend(request: NextRequest, path: string[]) {
       ? backendResponse.headers.getSetCookie()
       : []
 
+  const normalizeCookie = (cookie: string) =>
+    cookie
+      .replace(/;\s*Domain=[^;]*/gi, '')
+      .replace(/;\s*Secure/gi, '')
+      .replace(/;\s*Path=[^;]*/gi, '; Path=/')
+
   if (setCookies.length > 0) {
     for (const cookie of setCookies) {
-      responseHeaders.append('set-cookie', cookie)
+      responseHeaders.append('set-cookie', normalizeCookie(cookie))
     }
   } else {
     const single = backendResponse.headers.get('set-cookie')
-    if (single) responseHeaders.append('set-cookie', single)
+    if (single) responseHeaders.append('set-cookie', normalizeCookie(single))
   }
 
   const isRedirect = backendResponse.status >= 300 && backendResponse.status < 400

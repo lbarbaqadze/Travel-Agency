@@ -86,10 +86,10 @@ export default function AdminBookingsPage() {
                         <p className="text-xs text-neutral-400">{b.destination}</p>
                       </td>
                       <td className="px-4 py-3">
-                        <p className="text-neutral-900 capitalize">{b.name} {b.surname}</p>
+                        <p className="font-semibold text-neutral-900 dark:text-white capitalize">{b.name} {b.surname}</p>
                         <p className="text-xs text-neutral-400">{b.email}</p>
                       </td>
-                      <td className="px-4 py-3 text-neutral-600">{b.guests}</td>
+                      <td className="px-4 py-3 text-neutral-600 dark:text-neutral-400">{b.guests}</td>
                       <td className="px-4 py-3 font-semibold text-neutral-900 dark:text-white">${Number(b.total_price).toFixed(0)}</td>
                       <td className="px-4 py-3">
                         <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest ${STATUS_STYLES[b.status] ?? 'bg-neutral-100 text-neutral-500'}`}>

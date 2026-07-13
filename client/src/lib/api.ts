@@ -18,6 +18,7 @@ function getApiUrl(): string {
 
 interface ApiOptions extends RequestInit {
   skipAuth?: boolean
+  skipRefresh?: boolean
   skipSessionCleanup?: boolean
 }
 
@@ -66,7 +67,7 @@ export async function api<T = unknown>(
   endpoint: string,
   options: ApiOptions = {}
 ): Promise<T> {
-  const { skipAuth, skipSessionCleanup, ...fetchOptions } = options
+  const { skipAuth, skipRefresh, skipSessionCleanup, ...fetchOptions } = options
   const baseUrl = getApiUrl()
 
   const doFetch = () =>
@@ -81,11 +82,14 @@ export async function api<T = unknown>(
 
   let response = await doFetch()
 
-  if (response.status === 401 && !skipAuth) {
+  if (response.status === 401 && !skipAuth && !skipRefresh) {
     const refreshed = await refreshAccessToken()
 
     if (refreshed) {
       response = await doFetch()
+      if (response.status === 401 && !skipSessionCleanup) {
+        clearStaleSession()
+      }
     } else {
       if (!skipSessionCleanup) clearStaleSession()
       throw new ApiError('Session expired, please sign in again', 401, null)

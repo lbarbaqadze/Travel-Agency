@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ImageOff } from 'lucide-react'
 import { optimizeImageUrl } from '@/lib/cloudinary'
@@ -13,9 +14,21 @@ interface TourGalleryProps {
 }
 
 export default function TourGallery({ images, alt }: TourGalleryProps) {
+  const pathname = usePathname()
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const sorted = [...images].sort((a, b) => Number(b.is_cover) - Number(a.is_cover))
-  const [activeIndex, setActiveIndex] = useState(0)
   const [failed, setFailed] = useState<Record<number, boolean>>({})
+
+  const photoParam = Number(searchParams.get('photo') ?? '1') || 1
+  const activeIndex = Math.min(sorted.length - 1, Math.max(0, photoParam - 1))
+
+  function selectPhoto(index: number) {
+    const params = new URLSearchParams(searchParams.toString())
+    if (index > 0) params.set('photo', String(index + 1))
+    else params.delete('photo')
+    router.replace(`${pathname}${params.toString() ? `?${params.toString()}` : ''}`, { scroll: false })
+  }
 
   const active = sorted[activeIndex]
   const showFallback = !active || failed[activeIndex]
@@ -66,7 +79,7 @@ export default function TourGallery({ images, alt }: TourGalleryProps) {
             <button
               key={img.id}
               type="button"
-              onClick={() => setActiveIndex(i)}
+              onClick={() => selectPhoto(i)}
               className={`relative aspect-square overflow-hidden rounded-2xl bg-neutral-100 dark:bg-neutral-900 ring-2 transition-all ${
                 i === activeIndex
                   ? 'ring-neutral-900 dark:ring-white'

@@ -146,13 +146,26 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   checkAuth: async () => {
     const hasCachedUser = Boolean(useAuthStore.getState().user)
+
     if (!hasCachedUser) {
-      set({ isLoading: true })
+      set({ isLoading: false })
+      try {
+        const res = await api<{ data: { user: Record<string, unknown> } }>(ENDPOINTS.me, {
+          skipRefresh: true,
+          skipSessionCleanup: true,
+        })
+        const user = normalizeUser(res.data.user)
+        cacheUser(user)
+        set({ user })
+      } catch {
+        // not logged in — no refresh/log-out cycle
+      }
+      return
     }
+
+    set({ isLoading: true })
     try {
-      const res = await api<{ data: { user: Record<string, unknown> } }>(ENDPOINTS.me, {
-        skipSessionCleanup: true,
-      })
+      const res = await api<{ data: { user: Record<string, unknown> } }>(ENDPOINTS.me)
       const user = normalizeUser(res.data.user)
       cacheUser(user)
       set({ user, isLoading: false })

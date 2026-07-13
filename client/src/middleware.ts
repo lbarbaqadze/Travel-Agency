@@ -1,13 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const AUTH_ROUTES = [
-  '/login',
-  '/register',
-  '/forgot-password',
-  '/change-password',
-  '/verify-email',
-]
-
 const PROTECTED_PREFIXES = [
   '/checkout',
   '/my-bookings',
@@ -29,12 +21,7 @@ export function middleware(req: NextRequest) {
 
   const hasSession = Boolean(req.cookies.get('refreshToken'))
 
-  const isAuthRoute = AUTH_ROUTES.some((route) => pathname.startsWith(route))
   const isProtectedRoute = PROTECTED_PREFIXES.some((prefix) => pathname.startsWith(prefix))
-
-  if (isAuthRoute && hasSession) {
-    return NextResponse.redirect(new URL('/', req.url))
-  }
 
   if (isProtectedRoute && !hasSession) {
     const loginUrl = new URL('/login', req.url)
@@ -47,11 +34,6 @@ export function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    '/login',
-    '/register',
-    '/forgot-password',
-    '/change-password',
-    '/verify-email',
     '/checkout/:path*',
     '/my-bookings/:path*',
     '/profile/:path*',

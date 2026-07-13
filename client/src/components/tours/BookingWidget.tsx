@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Minus, Plus, ShieldCheck, Users } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
@@ -14,7 +14,9 @@ interface BookingWidgetProps {
 }
 
 export default function BookingWidget({ tour }: BookingWidgetProps) {
+  const pathname = usePathname()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const user = useAuthStore((s) => s.user)
   const isAuthLoading = useAuthStore((s) => s.isLoading)
   const createBooking = useBookingStore((s) => s.createBooking)
@@ -22,7 +24,7 @@ export default function BookingWidget({ tour }: BookingWidgetProps) {
   const bookings = useBookingStore((s) => s.bookings)
   const isCreating = useBookingStore((s) => s.isCreating)
 
-  const [guests, setGuests] = useState(1)
+  const guests = Math.min(tour.max_guests, Math.max(1, Number(searchParams.get('guests') ?? '1') || 1))
   const [localError, setLocalError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -38,14 +40,20 @@ export default function BookingWidget({ tour }: BookingWidgetProps) {
 
   function updateGuests(next: number) {
     setLocalError(null)
-    setGuests(Math.min(tour.max_guests, Math.max(1, next)))
+    const clamped = Math.min(tour.max_guests, Math.max(1, next))
+    const params = new URLSearchParams(searchParams.toString())
+    if (clamped > 1) params.set('guests', String(clamped))
+    else params.delete('guests')
+    router.replace(`${pathname}${params.toString() ? `?${params.toString()}` : ''}`, { scroll: false })
   }
 
   async function handleBook() {
     setLocalError(null)
 
     if (!user) {
-      router.push(`/login?redirect=/tours/${tour.slug}`)
+      const query = searchParams.toString()
+      const redirect = `${pathname}${query ? `?${query}` : ''}`
+      router.push(`/login?redirect=${encodeURIComponent(redirect)}`)
       return
     }
 
